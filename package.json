@@ -4,11 +4,13 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "build": "vue-cli-service build --target lib --name HcRecCenterSchedules --formats umd,umd-min",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@hcflgov/vue-google-sheet-model": "^1.2.0",
     "core-js": "^2.6.5",
+    "lodash.groupby": "^4.6.0",
     "vue": "^2.6.10"
   },
   "devDependencies": {
