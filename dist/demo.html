@@ -3,15 +3,15 @@
 <script src="https://unpkg.com/vue"></script>
 <script src="./HcRecCenterSchedules.umd.js"></script>
 
+
 <div id="app">
-  <div is="HcRecCenterSchedules"></div>
+  <demo></demo>
 </div>
 
 <script>
-  // test northdale rec center
-  window.sitecoreItemId = "{539EACA6-2FC0-4169-B536-EAC2E2FC12A1}"
-
-  Vue.use(HcRecCenterSchedules)
-
-  new Vue().$mount('#app')
+new Vue({
+  components: {
+    demo: HcRecCenterSchedules
+  }
+}).$mount('#app')
 </script>

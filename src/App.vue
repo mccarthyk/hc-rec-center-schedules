@@ -1,12 +1,12 @@
 <template>
-  <div class="">
+  <div class="hc-main-text-content">
 
     <ul class="list-group list-group-flush" :id="`accordion${_uid}`">
 
       <li class="list-group-item rounded-0 p-0" v-for="(models, group, i) in groups" :key="i">
 
         <a data-toggle="collapse" :href="`#collapse${i}`" class="list-group-item border-left-0 border-right-0 border-top-0 rounded-0 list-group-item-action d-flex align-items-center justify-content-between" :aria-controls="`collapse${i}`" aria-expanded="false">
-          <div :id="`heading${i}`">
+          <div :id="`heading${i}`" class="font-weight-bold">
             {{ group }}
           </div>
         </a>
@@ -18,9 +18,9 @@
               <li v-for="model in models" class="list-group-item border-left-0 border-right-0 border-bottom-0 rounded-0" :key="model._id">
                 <div class="d-flex justify-content-between align-items-center">
                   <h6 class="font-weight-bold mb-0">{{ model.activity }} - {{ model.ages }}</h6>
-                  <a v-if="model.registrationlink" :href="model.registrationlink" class="small">Register</a>
+                  <a v-if="model.registrationlink" :href="model.registrationlink" class="">Register</a>
                 </div>
-                <div class="font-italic small">
+                <div class="font-italic">
 
                   {{ model.dateStr }}
                   {{ model.starttime }}
