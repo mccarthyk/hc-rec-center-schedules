@@ -7696,12 +7696,15 @@ if (typeof window !== 'undefined') {
 // Indicate to webpack that this file can be concatenated
 /* harmony default export */ var setPublicPath = (null);
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"c445911a-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/App.vue?vue&type=template&id=13897df4&
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"hc-main-text-content"},[(_vm.programs.length)?_c('ul',{staticClass:"list-group list-group-flush",attrs:{"id":("accordion" + _vm._uid)}},_vm._l((_vm.groups),function(programs,group,i){return _c('li',{key:i,staticClass:"list-group-item rounded-0 p-0"},[_c('a',{staticClass:"list-group-item border-left-0 border-right-0 border-top-0 rounded-0 list-group-item-action d-flex align-items-center justify-content-between",attrs:{"data-toggle":"collapse","href":("#collapse" + i),"aria-controls":("collapse" + i),"aria-expanded":"false"}},[_c('div',{staticClass:"font-weight-bold",attrs:{"id":("heading" + i)}},[_vm._v(" "+_vm._s(group)+" ")])]),_c('div',{ref:"collapse",refInFor:true,staticClass:"collapse",attrs:{"id":("collapse" + i),"aria-labelledby":("heading" + i)}},[_c('div',{staticClass:"card-body py-0"},[_c('ul',{staticClass:"list-group m-0"},_vm._l((programs),function(program){return _c('li',{key:program.id,staticClass:"list-group-item border-left-0 border-right-0 border-bottom-0 rounded-0"},[_c('div',{staticClass:"d-flex justify-content-between align-items-center"},[_c('h6',{staticClass:"font-weight-bold mb-0"},[_vm._v(" "+_vm._s(program.fields.activityName[0])+" - "+_vm._s(program.fields.ages)+" ")]),(program.fields.registrationURL)?_c('a',{attrs:{"href":program.fields.registrationURL,"target":"_blank"}},[_vm._v("Register")]):_vm._e()]),_c('div',{staticClass:"font-italic"},[_vm._v(" "+_vm._s(program.fields.days.join(', '))+" "+_vm._s(program.fields.times)+" "),(program.fields.beginDate || program.fields.endDate)?_c('br'):_vm._e(),(program.fields.beginDate)?[_vm._v(" from "+_vm._s(program.fields.beginDate)+" ")]:_vm._e(),(program.fields.endDate)?[_vm._v(" until "+_vm._s(program.fields.endDate)+" ")]:_vm._e()],2),_vm._v(" "+_vm._s(program.fields.activityDescription[0])+" - "),_c('strong',[_vm._v(_vm._s(_vm.currency(program.fields.fee))+" "),(program.fields.feeNote)?_c('span',[_vm._v(_vm._s(program.fields.feeNote))]):_vm._e()])])}),0)])])])}),0):_c('div',{staticClass:"text-center h4 text-muted"},[_vm._t("default",[_vm._v("There are no programs at this time.")])],2)])}
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"c445911a-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/App.vue?vue&type=template&id=d3941c4c&
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"hc-main-text-content"},[(_vm.programs.length)?_c('ul',{staticClass:"list-group list-group-flush",attrs:{"id":("accordion" + _vm._uid)}},_vm._l((_vm.groups),function(groupedPrograms,groupName,i){return _c('Group',{key:i,attrs:{"name":groupName,"index":i}},[_c('ul',{staticClass:"list-group m-0"},_vm._l((groupedPrograms),function(ref){
+var id = ref.id;
+var fields = ref.fields;
+return _c('Activity',{key:id,attrs:{"fields":fields}})}),1)])}),1):_c('div',{staticClass:"text-center h4 text-muted"},[_vm._t("default",[_vm._v("There are no programs at this time.")])],2)])}
 var staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/App.vue?vue&type=template&id=13897df4&
+// CONCATENATED MODULE: ./src/App.vue?vue&type=template&id=d3941c4c&
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es.promise.js
 var es_promise = __webpack_require__("e6cf");
@@ -7750,9 +7753,6 @@ function _asyncToGenerator(fn) {
 }
 // CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js
 
-// EXTERNAL MODULE: ./node_modules/core-js/modules/es.number.to-fixed.js
-var es_number_to_fixed = __webpack_require__("b680");
-
 // EXTERNAL MODULE: ./node_modules/regenerator-runtime/runtime.js
 var runtime = __webpack_require__("96cf");
 
@@ -7764,10 +7764,14 @@ var airtable_default = /*#__PURE__*/__webpack_require__.n(airtable);
 var lodash_groupby = __webpack_require__("e831");
 var lodash_groupby_default = /*#__PURE__*/__webpack_require__.n(lodash_groupby);
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/App.vue?vue&type=script&lang=js&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"c445911a-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/Group.vue?vue&type=template&id=67f798b5&
+var Groupvue_type_template_id_67f798b5_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('li',{staticClass:"list-group-item rounded-0 p-0"},[_c('a',{staticClass:"list-group-item border-left-0 border-right-0 border-top-0 rounded-0 list-group-item-action d-flex align-items-center justify-content-between",attrs:{"data-toggle":"collapse","href":("#collapse" + _vm.index),"aria-controls":("collapse" + _vm.index),"aria-expanded":"false"}},[_c('div',{staticClass:"font-weight-bold",attrs:{"id":("heading" + _vm.index)}},[_vm._v(" "+_vm._s(_vm.name)+" ")])]),_c('div',{ref:"collapse",staticClass:"collapse",attrs:{"id":("collapse" + _vm.index),"aria-labelledby":("heading" + _vm.index)}},[_c('div',{staticClass:"card-body py-0"},[_vm._t("default")],2)])])}
+var Groupvue_type_template_id_67f798b5_staticRenderFns = []
 
 
+// CONCATENATED MODULE: ./src/components/Group.vue?vue&type=template&id=67f798b5&
 
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/Group.vue?vue&type=script&lang=js&
 //
 //
 //
@@ -7796,136 +7800,11 @@ var lodash_groupby_default = /*#__PURE__*/__webpack_require__.n(lodash_groupby);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-/* harmony default export */ var Appvue_type_script_lang_js_ = ({
-  install: function install(Vue) {
-    Vue.prototype.$airtable = airtable_default.a;
-    Vue.component('HcRecCenterSchedules', this);
-  },
-  data: function data() {
-    return {
-      programs: []
-    };
-  },
-  mounted: function mounted() {
-    this.fetchPrograms();
-  },
-  methods: {
-    fetchPrograms: function fetchPrograms() {
-      var _this = this;
-
-      return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-        var _yield$_this$$airtabl, data;
-
-        return regeneratorRuntime.wrap(function _callee$(_context) {
-          while (1) {
-            switch (_context.prev = _context.next) {
-              case 0:
-                _context.prev = 0;
-                _context.next = 3;
-                return _this.$airtable.get("/programs", {
-                  params: {
-                    filterByFormula: "AND('".concat(window.sitecoreItemId, "' = ARRAYJOIN({locationGUID}), OR({endDate} >= TODAY(), {endDate} = ''))"),
-                    view: 'Grid view'
-                  }
-                });
-
-              case 3:
-                _yield$_this$$airtabl = _context.sent;
-                data = _yield$_this$$airtabl.data;
-                _this.programs = data.records;
-                _context.next = 11;
-                break;
-
-              case 8:
-                _context.prev = 8;
-                _context.t0 = _context["catch"](0);
-                // error
-                // 401 unauth
-                // 422 (Unprocessable Entity)
-                _this.programs = [];
-
-              case 11:
-              case "end":
-                return _context.stop();
-            }
-          }
-        }, _callee, null, [[0, 8]]);
-      }))();
-    },
-    currency: function currency(dec) {
-      return "$".concat(dec.toFixed(2));
-    }
-  },
-  computed: {
-    groups: function groups() {
-      return lodash_groupby_default()(this.programs, 'fields.group');
-    }
-  }
+/* harmony default export */ var Groupvue_type_script_lang_js_ = ({
+  props: ['name', 'index']
 });
-// CONCATENATED MODULE: ./src/App.vue?vue&type=script&lang=js&
- /* harmony default export */ var src_Appvue_type_script_lang_js_ = (Appvue_type_script_lang_js_); 
+// CONCATENATED MODULE: ./src/components/Group.vue?vue&type=script&lang=js&
+ /* harmony default export */ var components_Groupvue_type_script_lang_js_ = (Groupvue_type_script_lang_js_); 
 // CONCATENATED MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
 /* globals __VUE_SSR_CONTEXT__ */
 
@@ -8026,7 +7905,7 @@ function normalizeComponent (
   }
 }
 
-// CONCATENATED MODULE: ./src/App.vue
+// CONCATENATED MODULE: ./src/components/Group.vue
 
 
 
@@ -8035,6 +7914,215 @@ function normalizeComponent (
 /* normalize component */
 
 var component = normalizeComponent(
+  components_Groupvue_type_script_lang_js_,
+  Groupvue_type_template_id_67f798b5_render,
+  Groupvue_type_template_id_67f798b5_staticRenderFns,
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* harmony default export */ var Group = (component.exports);
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"c445911a-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/Activity.vue?vue&type=template&id=e43a1a76&
+var Activityvue_type_template_id_e43a1a76_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('li',{staticClass:"list-group-item border-left-0 border-right-0 border-bottom-0 rounded-0"},[_c('div',{staticClass:"d-flex justify-content-between align-items-center"},[_c('h6',{staticClass:"font-weight-bold mb-0"},[_vm._v(" "+_vm._s(_vm.fields.activityName[0])+" - "+_vm._s(_vm.fields.ages)+" ")]),(_vm.fields.registrationURL)?_c('a',{attrs:{"href":_vm.fields.registrationURL,"target":"_blank"}},[_vm._v("Register")]):_vm._e()]),_c('div',{staticClass:"font-italic"},[_vm._v(" "+_vm._s(_vm.fields.days.join(', '))+" "+_vm._s(_vm.fields.times)+" "),(_vm.fields.beginDate || _vm.fields.endDate)?_c('br'):_vm._e(),(_vm.fields.beginDate)?[_vm._v(" from "+_vm._s(_vm.fields.beginDate)+" ")]:_vm._e(),(_vm.fields.endDate)?[_vm._v(" until "+_vm._s(_vm.fields.endDate)+" ")]:_vm._e()],2),_vm._v(" "+_vm._s(_vm.fields.activityDescription[0])+" - "),_c('strong',[_vm._v(_vm._s(_vm.currency(_vm.fields.fee))+" "),(_vm.fields.feeNote)?_c('span',[_vm._v(_vm._s(_vm.fields.feeNote))]):_vm._e()])])}
+var Activityvue_type_template_id_e43a1a76_staticRenderFns = []
+
+
+// CONCATENATED MODULE: ./src/components/Activity.vue?vue&type=template&id=e43a1a76&
+
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es.number.to-fixed.js
+var es_number_to_fixed = __webpack_require__("b680");
+
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/Activity.vue?vue&type=script&lang=js&
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ var Activityvue_type_script_lang_js_ = ({
+  props: ['fields'],
+  methods: {
+    currency: function currency(dec) {
+      return "$".concat(dec.toFixed(2));
+    }
+  }
+});
+// CONCATENATED MODULE: ./src/components/Activity.vue?vue&type=script&lang=js&
+ /* harmony default export */ var components_Activityvue_type_script_lang_js_ = (Activityvue_type_script_lang_js_); 
+// CONCATENATED MODULE: ./src/components/Activity.vue
+
+
+
+
+
+/* normalize component */
+
+var Activity_component = normalizeComponent(
+  components_Activityvue_type_script_lang_js_,
+  Activityvue_type_template_id_e43a1a76_render,
+  Activityvue_type_template_id_e43a1a76_staticRenderFns,
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* harmony default export */ var Activity = (Activity_component.exports);
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/App.vue?vue&type=script&lang=js&
+
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+
+/* harmony default export */ var Appvue_type_script_lang_js_ = ({
+  install: function install(Vue) {
+    Vue.prototype.$airtable = airtable_default.a;
+    Vue.component('HcRecCenterSchedules', this);
+  },
+  components: {
+    Group: Group,
+    Activity: Activity
+  },
+  data: function data() {
+    return {
+      programs: []
+    };
+  },
+  mounted: function mounted() {
+    this.fetchPrograms();
+  },
+  methods: {
+    fetchPrograms: function fetchPrograms() {
+      var _this = this;
+
+      return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+        var _yield$_this$$airtabl, data;
+
+        return regeneratorRuntime.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                _context.prev = 0;
+                _context.next = 3;
+                return _this.$airtable.get("/programs", {
+                  params: {
+                    filterByFormula: "AND({group} != '', '".concat(window.sitecoreItemId, "' = ARRAYJOIN({locationGUID}), OR({endDate} >= TODAY(), {endDate} = ''))"),
+                    view: 'Grid view'
+                  }
+                });
+
+              case 3:
+                _yield$_this$$airtabl = _context.sent;
+                data = _yield$_this$$airtabl.data;
+                _this.programs = data.records; // .filter((p) => p.fields?.group)
+
+                _context.next = 11;
+                break;
+
+              case 8:
+                _context.prev = 8;
+                _context.t0 = _context["catch"](0);
+                // error
+                // 401 unauth
+                // 422 (Unprocessable Entity)
+                _this.programs = [];
+
+              case 11:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee, null, [[0, 8]]);
+      }))();
+    }
+  },
+  computed: {
+    groups: function groups() {
+      return lodash_groupby_default()(this.programs, 'fields.group');
+    }
+  }
+});
+// CONCATENATED MODULE: ./src/App.vue?vue&type=script&lang=js&
+ /* harmony default export */ var src_Appvue_type_script_lang_js_ = (Appvue_type_script_lang_js_); 
+// CONCATENATED MODULE: ./src/App.vue
+
+
+
+
+
+/* normalize component */
+
+var App_component = normalizeComponent(
   src_Appvue_type_script_lang_js_,
   render,
   staticRenderFns,
@@ -8045,7 +8133,7 @@ var component = normalizeComponent(
   
 )
 
-/* harmony default export */ var App = (component.exports);
+/* harmony default export */ var App = (App_component.exports);
 // CONCATENATED MODULE: ./node_modules/@vue/cli-service/lib/commands/build/entry-lib.js
 
 
