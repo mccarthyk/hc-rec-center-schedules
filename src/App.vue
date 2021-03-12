@@ -5,79 +5,20 @@
       class="list-group list-group-flush"
       :id="`accordion${_uid}`"
     >
-      <li
-        class="list-group-item rounded-0 p-0"
-        v-for="(programs, group, i) in groups"
+      <Group
+        v-for="(groupedPrograms, groupName, i) in groups"
         :key="i"
+        :name="groupName"
+        :index="i"
       >
-        <a
-          data-toggle="collapse"
-          :href="`#collapse${i}`"
-          class="list-group-item border-left-0 border-right-0 border-top-0 rounded-0 list-group-item-action d-flex align-items-center justify-content-between"
-          :aria-controls="`collapse${i}`"
-          aria-expanded="false"
-        >
-          <div :id="`heading${i}`" class="font-weight-bold">
-            {{ group }}
-          </div>
-        </a>
-
-        <div
-          ref="collapse"
-          :id="`collapse${i}`"
-          :aria-labelledby="`heading${i}`"
-          class="collapse"
-        >
-          <div class="card-body py-0">
-            <ul class="list-group m-0">
-              <li
-                v-for="{id, fields} in programs"
-                class="list-group-item border-left-0 border-right-0 border-bottom-0 rounded-0"
-                :key="id"
-              >
-                <div class="d-flex justify-content-between align-items-center">
-                  <h6 class="font-weight-bold mb-0">
-                    {{ fields.activityName[0] }} -
-                    {{ fields.ages }}
-                  </h6>
-                  <a
-                    v-if="fields.registrationURL"
-                    :href="fields.registrationURL"
-                    class=""
-                    target="_blank"
-                    >Register</a
-                  >
-                </div>
-                <div class="font-italic">
-                  {{ fields.days.join(', ') }}
-                  {{ fields.times }}
-
-                  <br
-                    v-if="fields.beginDate || fields.endDate"
-                  />
-
-                  <template v-if="fields.beginDate">
-                    from
-                    {{ fields.beginDate }}
-                  </template>
-
-                  <template v-if="fields.endDate">
-                    until
-                    {{ fields.endDate }}
-                  </template>
-                </div>
-                {{ fields.activityDescription[0] }} -
-                <strong
-                  >{{ currency(fields.fee) }}
-                  <span v-if="fields.feeNote">{{
-                    fields.feeNote
-                  }}</span></strong
-                >
-              </li>
-            </ul>
-          </div>
-        </div>
-      </li>
+        <ul class="list-group m-0">
+          <Activity
+            v-for="{ id, fields } in groupedPrograms"
+            :key="id"
+            :fields="fields"
+          />
+        </ul>
+      </Group>
     </ul>
 
     <div v-else class="text-center h4 text-muted">
@@ -90,10 +31,18 @@
 import airtable from './airtable'
 import _groupBy from 'lodash.groupby'
 
+import Group from './components/Group'
+import Activity from './components/Activity'
+
 export default {
   install(Vue) {
     Vue.prototype.$airtable = airtable
     Vue.component('HcRecCenterSchedules', this)
+  },
+
+  components: {
+    Group,
+    Activity,
   },
 
   data: () => ({
@@ -109,11 +58,12 @@ export default {
       try {
         const { data } = await this.$airtable.get(`/programs`, {
           params: {
-            filterByFormula: `AND('${window.sitecoreItemId}' = ARRAYJOIN({locationGUID}), OR({endDate} >= TODAY(), {endDate} = ''))`,
+            filterByFormula: `AND({group} != '', '${window.sitecoreItemId}' = ARRAYJOIN({locationGUID}), OR({endDate} >= TODAY(), {endDate} = ''))`,
             view: 'Grid view',
           },
         })
         this.programs = data.records
+        // .filter((p) => p.fields?.group)
       } catch (error) {
         // error
         // 401 unauth
@@ -121,15 +71,11 @@ export default {
         this.programs = []
       }
     },
-
-    currency(dec) {
-      return `$${dec.toFixed(2)}`
-    },
   },
 
   computed: {
     groups() {
-      return _groupBy(this.programs.filter(p=>p.activityName?.length), 'fields.group')
+      return _groupBy(this.programs, 'fields.group')
     },
   },
 }

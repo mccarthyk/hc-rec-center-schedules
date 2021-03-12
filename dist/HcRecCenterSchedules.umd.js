@@ -467,32 +467,6 @@ module.exports = function (it) {
 
 /***/ }),
 
-/***/ "1dde":
-/***/ (function(module, exports, __webpack_require__) {
-
-var fails = __webpack_require__("d039");
-var wellKnownSymbol = __webpack_require__("b622");
-var V8_VERSION = __webpack_require__("2d00");
-
-var SPECIES = wellKnownSymbol('species');
-
-module.exports = function (METHOD_NAME) {
-  // We can't use this feature detection in V8 since it causes
-  // deoptimization and serious performance degradation
-  // https://github.com/zloirock/core-js/issues/677
-  return V8_VERSION >= 51 || !fails(function () {
-    var array = [];
-    var constructor = array.constructor = {};
-    constructor[SPECIES] = function () {
-      return { foo: 1 };
-    };
-    return array[METHOD_NAME](Boolean).foo !== 1;
-  });
-};
-
-
-/***/ }),
-
 /***/ "2266":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1528,29 +1502,6 @@ module.exports = {
 
 /***/ }),
 
-/***/ "4de4":
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var $ = __webpack_require__("23e7");
-var $filter = __webpack_require__("b727").filter;
-var arrayMethodHasSpeciesSupport = __webpack_require__("1dde");
-
-var HAS_SPECIES_SUPPORT = arrayMethodHasSpeciesSupport('filter');
-
-// `Array.prototype.filter` method
-// https://tc39.es/ecma262/#sec-array.prototype.filter
-// with adding support of @@species
-$({ target: 'Array', proto: true, forced: !HAS_SPECIES_SUPPORT }, {
-  filter: function filter(callbackfn /* , thisArg */) {
-    return $filter(this, callbackfn, arguments.length > 1 ? arguments[1] : undefined);
-  }
-});
-
-
-/***/ }),
-
 /***/ "50c4":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1790,33 +1741,6 @@ module.exports = function(module) {
 
 /***/ }),
 
-/***/ "65f0":
-/***/ (function(module, exports, __webpack_require__) {
-
-var isObject = __webpack_require__("861d");
-var isArray = __webpack_require__("e8b5");
-var wellKnownSymbol = __webpack_require__("b622");
-
-var SPECIES = wellKnownSymbol('species');
-
-// `ArraySpeciesCreate` abstract operation
-// https://tc39.es/ecma262/#sec-arrayspeciescreate
-module.exports = function (originalArray, length) {
-  var C;
-  if (isArray(originalArray)) {
-    C = originalArray.constructor;
-    // cross-realm fallback
-    if (typeof C == 'function' && (C === Array || isArray(C.prototype))) C = undefined;
-    else if (isObject(C)) {
-      C = C[SPECIES];
-      if (C === null) C = undefined;
-    }
-  } return new (C === undefined ? Array : C)(length === 0 ? 0 : length);
-};
-
-
-/***/ }),
-
 /***/ "69f3":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -2044,20 +1968,6 @@ module.exports = (
       };
     })()
 );
-
-
-/***/ }),
-
-/***/ "7b0b":
-/***/ (function(module, exports, __webpack_require__) {
-
-var requireObjectCoercible = __webpack_require__("1d80");
-
-// `ToObject` abstract operation
-// https://tc39.es/ecma262/#sec-toobject
-module.exports = function (argument) {
-  return Object(requireObjectCoercible(argument));
-};
 
 
 /***/ }),
@@ -3618,85 +3528,6 @@ $({ target: 'Number', proto: true, forced: FORCED }, {
     } return result;
   }
 });
-
-
-/***/ }),
-
-/***/ "b727":
-/***/ (function(module, exports, __webpack_require__) {
-
-var bind = __webpack_require__("0366");
-var IndexedObject = __webpack_require__("44ad");
-var toObject = __webpack_require__("7b0b");
-var toLength = __webpack_require__("50c4");
-var arraySpeciesCreate = __webpack_require__("65f0");
-
-var push = [].push;
-
-// `Array.prototype.{ forEach, map, filter, some, every, find, findIndex, filterOut }` methods implementation
-var createMethod = function (TYPE) {
-  var IS_MAP = TYPE == 1;
-  var IS_FILTER = TYPE == 2;
-  var IS_SOME = TYPE == 3;
-  var IS_EVERY = TYPE == 4;
-  var IS_FIND_INDEX = TYPE == 6;
-  var IS_FILTER_OUT = TYPE == 7;
-  var NO_HOLES = TYPE == 5 || IS_FIND_INDEX;
-  return function ($this, callbackfn, that, specificCreate) {
-    var O = toObject($this);
-    var self = IndexedObject(O);
-    var boundFunction = bind(callbackfn, that, 3);
-    var length = toLength(self.length);
-    var index = 0;
-    var create = specificCreate || arraySpeciesCreate;
-    var target = IS_MAP ? create($this, length) : IS_FILTER || IS_FILTER_OUT ? create($this, 0) : undefined;
-    var value, result;
-    for (;length > index; index++) if (NO_HOLES || index in self) {
-      value = self[index];
-      result = boundFunction(value, index, O);
-      if (TYPE) {
-        if (IS_MAP) target[index] = result; // map
-        else if (result) switch (TYPE) {
-          case 3: return true;              // some
-          case 5: return value;             // find
-          case 6: return index;             // findIndex
-          case 2: push.call(target, value); // filter
-        } else switch (TYPE) {
-          case 4: return false;             // every
-          case 7: push.call(target, value); // filterOut
-        }
-      }
-    }
-    return IS_FIND_INDEX ? -1 : IS_SOME || IS_EVERY ? IS_EVERY : target;
-  };
-};
-
-module.exports = {
-  // `Array.prototype.forEach` method
-  // https://tc39.es/ecma262/#sec-array.prototype.foreach
-  forEach: createMethod(0),
-  // `Array.prototype.map` method
-  // https://tc39.es/ecma262/#sec-array.prototype.map
-  map: createMethod(1),
-  // `Array.prototype.filter` method
-  // https://tc39.es/ecma262/#sec-array.prototype.filter
-  filter: createMethod(2),
-  // `Array.prototype.some` method
-  // https://tc39.es/ecma262/#sec-array.prototype.some
-  some: createMethod(3),
-  // `Array.prototype.every` method
-  // https://tc39.es/ecma262/#sec-array.prototype.every
-  every: createMethod(4),
-  // `Array.prototype.find` method
-  // https://tc39.es/ecma262/#sec-array.prototype.find
-  find: createMethod(5),
-  // `Array.prototype.findIndex` method
-  // https://tc39.es/ecma262/#sec-array.prototype.findIndex
-  findIndex: createMethod(6),
-  // `Array.prototype.filterOut` method
-  // https://github.com/tc39/proposal-array-filtering
-  filterOut: createMethod(7)
-};
 
 
 /***/ }),
@@ -7683,20 +7514,6 @@ module.exports = function (target, source) {
 
 /***/ }),
 
-/***/ "e8b5":
-/***/ (function(module, exports, __webpack_require__) {
-
-var classof = __webpack_require__("c6b6");
-
-// `IsArray` abstract operation
-// https://tc39.es/ecma262/#sec-isarray
-module.exports = Array.isArray || function isArray(arg) {
-  return classof(arg) == 'Array';
-};
-
-
-/***/ }),
-
 /***/ "e95a":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -7879,15 +7696,15 @@ if (typeof window !== 'undefined') {
 // Indicate to webpack that this file can be concatenated
 /* harmony default export */ var setPublicPath = (null);
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"c445911a-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/App.vue?vue&type=template&id=666ae9e1&
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"hc-main-text-content"},[(_vm.programs.length)?_c('ul',{staticClass:"list-group list-group-flush",attrs:{"id":("accordion" + _vm._uid)}},_vm._l((_vm.groups),function(programs,group,i){return _c('li',{key:i,staticClass:"list-group-item rounded-0 p-0"},[_c('a',{staticClass:"list-group-item border-left-0 border-right-0 border-top-0 rounded-0 list-group-item-action d-flex align-items-center justify-content-between",attrs:{"data-toggle":"collapse","href":("#collapse" + i),"aria-controls":("collapse" + i),"aria-expanded":"false"}},[_c('div',{staticClass:"font-weight-bold",attrs:{"id":("heading" + i)}},[_vm._v(" "+_vm._s(group)+" ")])]),_c('div',{ref:"collapse",refInFor:true,staticClass:"collapse",attrs:{"id":("collapse" + i),"aria-labelledby":("heading" + i)}},[_c('div',{staticClass:"card-body py-0"},[_c('ul',{staticClass:"list-group m-0"},_vm._l((programs),function(ref){
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"c445911a-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/App.vue?vue&type=template&id=d3941c4c&
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"hc-main-text-content"},[(_vm.programs.length)?_c('ul',{staticClass:"list-group list-group-flush",attrs:{"id":("accordion" + _vm._uid)}},_vm._l((_vm.groups),function(groupedPrograms,groupName,i){return _c('Group',{key:i,attrs:{"name":groupName,"index":i}},[_c('ul',{staticClass:"list-group m-0"},_vm._l((groupedPrograms),function(ref){
 var id = ref.id;
 var fields = ref.fields;
-return _c('li',{key:id,staticClass:"list-group-item border-left-0 border-right-0 border-bottom-0 rounded-0"},[_c('div',{staticClass:"d-flex justify-content-between align-items-center"},[_c('h6',{staticClass:"font-weight-bold mb-0"},[_vm._v(" "+_vm._s(fields.activityName[0])+" - "+_vm._s(fields.ages)+" ")]),(fields.registrationURL)?_c('a',{attrs:{"href":fields.registrationURL,"target":"_blank"}},[_vm._v("Register")]):_vm._e()]),_c('div',{staticClass:"font-italic"},[_vm._v(" "+_vm._s(fields.days.join(', '))+" "+_vm._s(fields.times)+" "),(fields.beginDate || fields.endDate)?_c('br'):_vm._e(),(fields.beginDate)?[_vm._v(" from "+_vm._s(fields.beginDate)+" ")]:_vm._e(),(fields.endDate)?[_vm._v(" until "+_vm._s(fields.endDate)+" ")]:_vm._e()],2),_vm._v(" "+_vm._s(fields.activityDescription[0])+" - "),_c('strong',[_vm._v(_vm._s(_vm.currency(fields.fee))+" "),(fields.feeNote)?_c('span',[_vm._v(_vm._s(fields.feeNote))]):_vm._e()])])}),0)])])])}),0):_c('div',{staticClass:"text-center h4 text-muted"},[_vm._t("default",[_vm._v("There are no programs at this time.")])],2)])}
+return _c('Activity',{key:id,attrs:{"fields":fields}})}),1)])}),1):_c('div',{staticClass:"text-center h4 text-muted"},[_vm._t("default",[_vm._v("There are no programs at this time.")])],2)])}
 var staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/App.vue?vue&type=template&id=666ae9e1&
+// CONCATENATED MODULE: ./src/App.vue?vue&type=template&id=d3941c4c&
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es.promise.js
 var es_promise = __webpack_require__("e6cf");
@@ -7936,12 +7753,6 @@ function _asyncToGenerator(fn) {
 }
 // CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js
 
-// EXTERNAL MODULE: ./node_modules/core-js/modules/es.number.to-fixed.js
-var es_number_to_fixed = __webpack_require__("b680");
-
-// EXTERNAL MODULE: ./node_modules/core-js/modules/es.array.filter.js
-var es_array_filter = __webpack_require__("4de4");
-
 // EXTERNAL MODULE: ./node_modules/regenerator-runtime/runtime.js
 var runtime = __webpack_require__("96cf");
 
@@ -7953,11 +7764,14 @@ var airtable_default = /*#__PURE__*/__webpack_require__.n(airtable);
 var lodash_groupby = __webpack_require__("e831");
 var lodash_groupby_default = /*#__PURE__*/__webpack_require__.n(lodash_groupby);
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/App.vue?vue&type=script&lang=js&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"c445911a-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/Group.vue?vue&type=template&id=67f798b5&
+var Groupvue_type_template_id_67f798b5_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('li',{staticClass:"list-group-item rounded-0 p-0"},[_c('a',{staticClass:"list-group-item border-left-0 border-right-0 border-top-0 rounded-0 list-group-item-action d-flex align-items-center justify-content-between",attrs:{"data-toggle":"collapse","href":("#collapse" + _vm.index),"aria-controls":("collapse" + _vm.index),"aria-expanded":"false"}},[_c('div',{staticClass:"font-weight-bold",attrs:{"id":("heading" + _vm.index)}},[_vm._v(" "+_vm._s(_vm.name)+" ")])]),_c('div',{ref:"collapse",staticClass:"collapse",attrs:{"id":("collapse" + _vm.index),"aria-labelledby":("heading" + _vm.index)}},[_c('div',{staticClass:"card-body py-0"},[_vm._t("default")],2)])])}
+var Groupvue_type_template_id_67f798b5_staticRenderFns = []
 
 
+// CONCATENATED MODULE: ./src/components/Group.vue?vue&type=template&id=67f798b5&
 
-
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/Group.vue?vue&type=script&lang=js&
 //
 //
 //
@@ -7986,140 +7800,11 @@ var lodash_groupby_default = /*#__PURE__*/__webpack_require__.n(lodash_groupby);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-/* harmony default export */ var Appvue_type_script_lang_js_ = ({
-  install: function install(Vue) {
-    Vue.prototype.$airtable = airtable_default.a;
-    Vue.component('HcRecCenterSchedules', this);
-  },
-  data: function data() {
-    return {
-      programs: []
-    };
-  },
-  mounted: function mounted() {
-    this.fetchPrograms();
-  },
-  methods: {
-    fetchPrograms: function fetchPrograms() {
-      var _this = this;
-
-      return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-        var _yield$_this$$airtabl, data;
-
-        return regeneratorRuntime.wrap(function _callee$(_context) {
-          while (1) {
-            switch (_context.prev = _context.next) {
-              case 0:
-                _context.prev = 0;
-                _context.next = 3;
-                return _this.$airtable.get("/programs", {
-                  params: {
-                    filterByFormula: "AND('".concat(window.sitecoreItemId, "' = ARRAYJOIN({locationGUID}), OR({endDate} >= TODAY(), {endDate} = ''))"),
-                    view: 'Grid view'
-                  }
-                });
-
-              case 3:
-                _yield$_this$$airtabl = _context.sent;
-                data = _yield$_this$$airtabl.data;
-                _this.programs = data.records;
-                _context.next = 11;
-                break;
-
-              case 8:
-                _context.prev = 8;
-                _context.t0 = _context["catch"](0);
-                // error
-                // 401 unauth
-                // 422 (Unprocessable Entity)
-                _this.programs = [];
-
-              case 11:
-              case "end":
-                return _context.stop();
-            }
-          }
-        }, _callee, null, [[0, 8]]);
-      }))();
-    },
-    currency: function currency(dec) {
-      return "$".concat(dec.toFixed(2));
-    }
-  },
-  computed: {
-    groups: function groups() {
-      return lodash_groupby_default()(this.programs.filter(function (p) {
-        var _p$activityName;
-
-        return (_p$activityName = p.activityName) === null || _p$activityName === void 0 ? void 0 : _p$activityName.length;
-      }), 'fields.group');
-    }
-  }
+/* harmony default export */ var Groupvue_type_script_lang_js_ = ({
+  props: ['name', 'index']
 });
-// CONCATENATED MODULE: ./src/App.vue?vue&type=script&lang=js&
- /* harmony default export */ var src_Appvue_type_script_lang_js_ = (Appvue_type_script_lang_js_); 
+// CONCATENATED MODULE: ./src/components/Group.vue?vue&type=script&lang=js&
+ /* harmony default export */ var components_Groupvue_type_script_lang_js_ = (Groupvue_type_script_lang_js_); 
 // CONCATENATED MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
 /* globals __VUE_SSR_CONTEXT__ */
 
@@ -8220,7 +7905,7 @@ function normalizeComponent (
   }
 }
 
-// CONCATENATED MODULE: ./src/App.vue
+// CONCATENATED MODULE: ./src/components/Group.vue
 
 
 
@@ -8229,6 +7914,215 @@ function normalizeComponent (
 /* normalize component */
 
 var component = normalizeComponent(
+  components_Groupvue_type_script_lang_js_,
+  Groupvue_type_template_id_67f798b5_render,
+  Groupvue_type_template_id_67f798b5_staticRenderFns,
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* harmony default export */ var Group = (component.exports);
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"c445911a-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/Activity.vue?vue&type=template&id=e43a1a76&
+var Activityvue_type_template_id_e43a1a76_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('li',{staticClass:"list-group-item border-left-0 border-right-0 border-bottom-0 rounded-0"},[_c('div',{staticClass:"d-flex justify-content-between align-items-center"},[_c('h6',{staticClass:"font-weight-bold mb-0"},[_vm._v(" "+_vm._s(_vm.fields.activityName[0])+" - "+_vm._s(_vm.fields.ages)+" ")]),(_vm.fields.registrationURL)?_c('a',{attrs:{"href":_vm.fields.registrationURL,"target":"_blank"}},[_vm._v("Register")]):_vm._e()]),_c('div',{staticClass:"font-italic"},[_vm._v(" "+_vm._s(_vm.fields.days.join(', '))+" "+_vm._s(_vm.fields.times)+" "),(_vm.fields.beginDate || _vm.fields.endDate)?_c('br'):_vm._e(),(_vm.fields.beginDate)?[_vm._v(" from "+_vm._s(_vm.fields.beginDate)+" ")]:_vm._e(),(_vm.fields.endDate)?[_vm._v(" until "+_vm._s(_vm.fields.endDate)+" ")]:_vm._e()],2),_vm._v(" "+_vm._s(_vm.fields.activityDescription[0])+" - "),_c('strong',[_vm._v(_vm._s(_vm.currency(_vm.fields.fee))+" "),(_vm.fields.feeNote)?_c('span',[_vm._v(_vm._s(_vm.fields.feeNote))]):_vm._e()])])}
+var Activityvue_type_template_id_e43a1a76_staticRenderFns = []
+
+
+// CONCATENATED MODULE: ./src/components/Activity.vue?vue&type=template&id=e43a1a76&
+
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es.number.to-fixed.js
+var es_number_to_fixed = __webpack_require__("b680");
+
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/Activity.vue?vue&type=script&lang=js&
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ var Activityvue_type_script_lang_js_ = ({
+  props: ['fields'],
+  methods: {
+    currency: function currency(dec) {
+      return "$".concat(dec.toFixed(2));
+    }
+  }
+});
+// CONCATENATED MODULE: ./src/components/Activity.vue?vue&type=script&lang=js&
+ /* harmony default export */ var components_Activityvue_type_script_lang_js_ = (Activityvue_type_script_lang_js_); 
+// CONCATENATED MODULE: ./src/components/Activity.vue
+
+
+
+
+
+/* normalize component */
+
+var Activity_component = normalizeComponent(
+  components_Activityvue_type_script_lang_js_,
+  Activityvue_type_template_id_e43a1a76_render,
+  Activityvue_type_template_id_e43a1a76_staticRenderFns,
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* harmony default export */ var Activity = (Activity_component.exports);
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/App.vue?vue&type=script&lang=js&
+
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+
+/* harmony default export */ var Appvue_type_script_lang_js_ = ({
+  install: function install(Vue) {
+    Vue.prototype.$airtable = airtable_default.a;
+    Vue.component('HcRecCenterSchedules', this);
+  },
+  components: {
+    Group: Group,
+    Activity: Activity
+  },
+  data: function data() {
+    return {
+      programs: []
+    };
+  },
+  mounted: function mounted() {
+    this.fetchPrograms();
+  },
+  methods: {
+    fetchPrograms: function fetchPrograms() {
+      var _this = this;
+
+      return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+        var _yield$_this$$airtabl, data;
+
+        return regeneratorRuntime.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                _context.prev = 0;
+                _context.next = 3;
+                return _this.$airtable.get("/programs", {
+                  params: {
+                    filterByFormula: "AND({group} != '', '".concat(window.sitecoreItemId, "' = ARRAYJOIN({locationGUID}), OR({endDate} >= TODAY(), {endDate} = ''))"),
+                    view: 'Grid view'
+                  }
+                });
+
+              case 3:
+                _yield$_this$$airtabl = _context.sent;
+                data = _yield$_this$$airtabl.data;
+                _this.programs = data.records; // .filter((p) => p.fields?.group)
+
+                _context.next = 11;
+                break;
+
+              case 8:
+                _context.prev = 8;
+                _context.t0 = _context["catch"](0);
+                // error
+                // 401 unauth
+                // 422 (Unprocessable Entity)
+                _this.programs = [];
+
+              case 11:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee, null, [[0, 8]]);
+      }))();
+    }
+  },
+  computed: {
+    groups: function groups() {
+      return lodash_groupby_default()(this.programs, 'fields.group');
+    }
+  }
+});
+// CONCATENATED MODULE: ./src/App.vue?vue&type=script&lang=js&
+ /* harmony default export */ var src_Appvue_type_script_lang_js_ = (Appvue_type_script_lang_js_); 
+// CONCATENATED MODULE: ./src/App.vue
+
+
+
+
+
+/* normalize component */
+
+var App_component = normalizeComponent(
   src_Appvue_type_script_lang_js_,
   render,
   staticRenderFns,
@@ -8239,7 +8133,7 @@ var component = normalizeComponent(
   
 )
 
-/* harmony default export */ var App = (component.exports);
+/* harmony default export */ var App = (App_component.exports);
 // CONCATENATED MODULE: ./node_modules/@vue/cli-service/lib/commands/build/entry-lib.js
 
 
