@@ -31,46 +31,46 @@
           <div class="card-body py-0">
             <ul class="list-group m-0">
               <li
-                v-for="program in programs"
+                v-for="{id, fields} in programs"
                 class="list-group-item border-left-0 border-right-0 border-bottom-0 rounded-0"
-                :key="program.id"
+                :key="id"
               >
                 <div class="d-flex justify-content-between align-items-center">
                   <h6 class="font-weight-bold mb-0">
-                    {{ program.fields.activityName[0] }} -
-                    {{ program.fields.ages }}
+                    {{ fields.activityName[0] }} -
+                    {{ fields.ages }}
                   </h6>
                   <a
-                    v-if="program.fields.registrationURL"
-                    :href="program.fields.registrationURL"
+                    v-if="fields.registrationURL"
+                    :href="fields.registrationURL"
                     class=""
                     target="_blank"
                     >Register</a
                   >
                 </div>
                 <div class="font-italic">
-                  {{ program.fields.days.join(', ') }}
-                  {{ program.fields.times }}
+                  {{ fields.days.join(', ') }}
+                  {{ fields.times }}
 
                   <br
-                    v-if="program.fields.beginDate || program.fields.endDate"
+                    v-if="fields.beginDate || fields.endDate"
                   />
 
-                  <template v-if="program.fields.beginDate">
+                  <template v-if="fields.beginDate">
                     from
-                    {{ program.fields.beginDate }}
+                    {{ fields.beginDate }}
                   </template>
 
-                  <template v-if="program.fields.endDate">
+                  <template v-if="fields.endDate">
                     until
-                    {{ program.fields.endDate }}
+                    {{ fields.endDate }}
                   </template>
                 </div>
-                {{ program.fields.activityDescription[0] }} -
+                {{ fields.activityDescription[0] }} -
                 <strong
-                  >{{ currency(program.fields.fee) }}
-                  <span v-if="program.fields.feeNote">{{
-                    program.fields.feeNote
+                  >{{ currency(fields.fee) }}
+                  <span v-if="fields.feeNote">{{
+                    fields.feeNote
                   }}</span></strong
                 >
               </li>
@@ -129,7 +129,7 @@ export default {
 
   computed: {
     groups() {
-      return _groupBy(this.programs, 'fields.group')
+      return _groupBy(this.programs.filter(p=>p.activityName?.length), 'fields.group')
     },
   },
 }
