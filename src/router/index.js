@@ -1,4 +1,4 @@
-import { createWebHistory, createRouter } from 'vue-router'
+import { createWebHashHistory, createRouter } from 'vue-router'
 import Home from '../views/index.vue'
 import Location from '../views/location.vue'
 
@@ -17,7 +17,7 @@ const routes = [
 ]
 
 const router = createRouter({
-  history: createWebHistory('/hc-rec-center-schedules/'),
+  history: createWebHashHistory(),
   routes,
 })
 
