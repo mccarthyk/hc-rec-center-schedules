@@ -1,25 +1,26 @@
 {
-  "name": "vue-rec-center-schedules",
-  "version": "0.1.0",
-  "private": true,
+  "name": "hc-rec-center-schedules",
+  "version": "0.0.0",
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build --target lib --name HcRecCenterSchedules --formats umd,umd-min",
-    "lint": "vue-cli-service lint"
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview",
+    "lint": "eslint --ext .js,.vue src"
   },
   "dependencies": {
     "axios": "^0.21.1",
-    "core-js": "^3.6.5",
+    "bootstrap": "^5.0.0-beta3",
+    "iframe-resizer": "^4.3.1",
     "lodash.groupby": "^4.6.0",
-    "vue": "^2.6.10"
+    "vue": "^3.0.5",
+    "vue-router": "^4.0.6"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "~4.5.11",
-    "@vue/cli-plugin-eslint": "~4.5.11",
-    "@vue/cli-service": "~4.5.11",
-    "babel-eslint": "^10.1.0",
-    "eslint": "^6.7.2",
-    "eslint-plugin-vue": "^6.2.2",
-    "vue-template-compiler": "^2.6.10"
+    "@vitejs/plugin-vue": "^1.2.1",
+    "@vue/compiler-sfc": "^3.0.5",
+    "eslint": "^7.24.0",
+    "eslint-plugin-vue": "^7.9.0",
+    "sass": "^1.32.8",
+    "vite": "^2.1.5"
   }
 }
