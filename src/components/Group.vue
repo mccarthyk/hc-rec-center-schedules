@@ -1,33 +1,36 @@
 <template>
-  <li class="list-group-item rounded-0 p-0">
-    <a
-      data-toggle="collapse"
-      :href="`#collapse${index}`"
-      class="list-group-item border-left-0 border-right-0 border-top-0 rounded-0 list-group-item-action d-flex align-items-center justify-content-between"
-      :aria-controls="`collapse${index}`"
-      aria-expanded="false"
-    >
-      <div :id="`heading${index}`" class="font-weight-bold">
+  <div class="accordion-item">
+    <h2 class="accordion-header" :id="`heading${index}`">
+      <button
+        class="accordion-button collapsed"
+        type="button"
+        data-bs-toggle="collapse"
+        :data-bs-target="`#collapse${index}`"
+        aria-expanded="false"
+        :aria-controls="`collapse${index}`"
+      >
         {{ name }}
-      </div>
-    </a>
-
+      </button>
+    </h2>
     <div
-      ref="collapse"
       :id="`collapse${index}`"
+      class="accordion-collapse collapse"
       :aria-labelledby="`heading${index}`"
-      class="collapse"
     >
-      <div class="card-body py-0">
-        <!-- programs slot -->
-        <slot></slot>
+      <div class="accordion-body">
+        <ul class="list-group list-group-flush">
+          <slot></slot>
+        </ul>
       </div>
     </div>
-  </li>
+  </div>
 </template>
 
 <script>
 export default {
-  props: ['name', 'index'],
+  props: {
+    name: String,
+    index: Number,
+  },
 }
 </script>

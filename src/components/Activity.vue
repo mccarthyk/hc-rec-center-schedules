@@ -1,21 +1,24 @@
 <template>
-  <li
-    class="list-group-item border-left-0 border-right-0 border-bottom-0 rounded-0"
-  >
-    <div class="d-flex justify-content-between align-items-center">
-      <h6 class="font-weight-bold mb-0">
+  <li class="list-group-item mb-3">
+    <div class="d-flex w-100 justify-content-between">
+      <h5 class="fw-bold">
         {{ fields.activityName[0] }} -
         {{ fields.ages }}
-      </h6>
+      </h5>
+
       <a
         v-if="fields.registrationURL"
         :href="fields.registrationURL"
-        class=""
         target="_blank"
         >Register</a
       >
     </div>
-    <div class="font-italic">
+
+    <p v-if="fields.activityDescription?.[0]">
+      {{ fields.activityDescription?.[0] }}
+    </p>
+
+    <p class="fst-italic text-muted small">
       {{ fields.days.join(', ') }}
       {{ fields.times }}
 
@@ -30,18 +33,20 @@
         until
         {{ fields.endDate }}
       </template>
-    </div>
-    {{ fields.activityDescription[0] }} -
-    <strong
-      >{{ currency(fields.fee) }}
-      <span v-if="fields.feeNote">{{ fields.feeNote }}</span></strong
-    >
+    </p>
+
+    <p class="fw-bold">
+      {{ currency(fields.fee) }}
+      <span v-if="fields.feeNote">{{ fields.feeNote }}</span>
+    </p>
   </li>
 </template>
 
 <script>
 export default {
-  props: ['fields'],
+  props: {
+    fields: Object,
+  },
 
   methods: {
     currency(dec) {

@@ -1,29 +1,31 @@
-# vue-rec-center-schedules
+# hc-rec-center-schedules
 
 ## Project setup
+
 ```
-npm install
+yarn
 ```
 
 ### Compiles and hot-reloads for development
+
 ```
-npm run serve
+yarn dev
 ```
 
-### Compiles and minifies for production
+### Compiles for production
+
 ```
-npm run build
+yarn build
 ```
 
-### Run your tests
+### Test built dist folder
+
 ```
-npm run test
+yarn serve
 ```
 
-### Lints and fixes files
-```
-npm run lint
-```
+### Lints files
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+```
+yarn lint
+```
