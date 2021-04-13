@@ -6,14 +6,14 @@
   </div>
 
   <div v-else-if="locations.data.length" class="list-group">
-    <a
+    <router-link
       v-for="{ id, fields } in locations.data"
       :key="id"
-      :href="`/${fields.GUID}`"
+      :to="{ name: 'Location', params: { sitecoreItemId: fields.GUID } }"
       class="list-group-item list-group-item-action"
     >
       {{ fields.name }}
-    </a>
+    </router-link>
   </div>
 
   <div v-else class="alert alert-info" role="alert">

@@ -17,8 +17,7 @@ const routes = [
 ]
 
 const router = createRouter({
-  history: createWebHistory(),
-  base: import.meta.env.PROD ? '/hc-rec-center-schedules/' : undefined,
+  history: createWebHistory('/hc-rec-center-schedules/'),
   routes,
 })
 
